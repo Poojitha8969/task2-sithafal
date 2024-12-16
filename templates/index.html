@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f8f8f8;
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RAG System - Query and Data Ingestion</h1>
+        <form id="ingestForm">
+            <div class="mb-3">
+                <label for="url" class="form-label">Enter URL to Ingest:</label>
+                <input type="text" class="form-control" id="url" name="url" placeholder="Enter the URL here" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Ingest Website</button>
+        </form>
+
+        <form id="queryForm">
+            <div class="mb-3">
+                <label for="query" class="form-label">Ask a Question:</label>
+                <input type="text" class="form-control" id="query" name="query" placeholder="Enter your question" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Ask Question</button>
+        </form>
+
+        <div id="responseDiv" class="response"></div>
+    </div>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+    <script>
+        document.getElementById('ingestForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const url = document.getElementById('url').value;
+            fetch('/ingest', {
+                method: 'POST',
+                body: new URLSearchParams({ 'url': url }),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => alert("Error: " + error));
+        });
+
+        document.getElementById('queryForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = document.getElementById('query').value;
+            fetch('/query', {
+                method: 'POST',
+                body: new URLSearchParams({ 'query': query }),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('responseDiv').textContent = "Answer: " + data.response;
+            })
+            .catch(error => alert("Error: " + error));
+        });
+    </script>    
+
+
+</body>
+</html>
